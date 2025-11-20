@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { productsData } from "../data/products";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../features/cart/cartSlice";

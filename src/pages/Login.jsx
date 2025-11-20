@@ -1,32 +1,34 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { login } from "../features/auth/authSlice";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { login as loginFetch } from "../api/endpoints/auth";
+import useUser from "../hooks/useUser";
 
 export default function Login() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const { login: saveUser } = useUser();
+
+  const { mutateAsync: loginUser } = useMutation({
+    mutationFn: loginFetch,
+    onSuccess: (data) => {
+      if (!data.success) throw new Error(data.message || "Login failed");
+      saveUser(data.data);
+      console.log("Login successful! Welcome back!");
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    if (!username || !password) {
-      alert("Please fill in both fields.");
-      return;
-    }
-
-    const userData = { username, password };
-    dispatch(login(userData));
-
-    localStorage.setItem("user", JSON.stringify(userData));
-
-    navigate("/profile");
+    await loginUser({ email, password });
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
+    <div className="flex items-center justify-center min-h-screen bg-linear-to-b from-gray-900 to-gray-800 text-white">
       <form
         onSubmit={handleLogin}
         className="bg-black/60 p-8 rounded-2xl shadow-lg w-96 flex flex-col gap-4"
@@ -38,8 +40,8 @@ export default function Login() {
         <input
           type="text"
           placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           className="p-3 rounded-lg bg-gray-800 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400"
         />
 

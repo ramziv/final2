@@ -1,9 +1,8 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { useDispatch } from "react-redux";
 import { logout } from "../features/auth/authSlice";
 
-export default function Nav({ cart, user }) {
+export default function Nav({ user }) {
   const dispatch = useDispatch();
 
   const handleLogout = () => {
@@ -29,7 +28,6 @@ export default function Nav({ cart, user }) {
               >
                 {item}
               </Link>
-
               <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-yellow-400 rounded-full transition-all duration-300 group-hover:w-full"></span>
             </li>
           ))}
@@ -39,7 +37,7 @@ export default function Nav({ cart, user }) {
               to="/cart"
               className="transition-all duration-300 hover:text-yellow-400 flex items-center gap-1"
             >
-              CART <span className="text-yellow-500">({cart.length})</span>
+              CART
             </Link>
             <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-yellow-400 rounded-full transition-all duration-300 group-hover:w-full"></span>
           </li>

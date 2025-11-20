@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const savedUser = JSON.parse(localStorage.getItem("user")) || null;
-
 const initialState = {
-  user: savedUser,
+  user: null,
+  isLoggedIn: false,
+  isAdmin: false,
 };
 
 const authSlice = createSlice({
@@ -12,11 +12,13 @@ const authSlice = createSlice({
   reducers: {
     login: (state, action) => {
       state.user = action.payload;
-      localStorage.setItem("user", JSON.stringify(action.payload));
+      state.isLoggedIn = true;
+      state.isAdmin = action.payload.role === "Admin";
     },
     logout: (state) => {
       state.user = null;
-      localStorage.removeItem("user");
+      state.isLoggedIn = false;
+      state.isAdmin = false;
     },
     updateProfile: (state, action) => {
       state.user = { ...state.user, ...action.payload };
